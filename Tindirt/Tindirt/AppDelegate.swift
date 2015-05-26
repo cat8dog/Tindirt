@@ -57,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    
+    // test commit
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         // Store the deviceToken in the current Installation and save it to Parse
