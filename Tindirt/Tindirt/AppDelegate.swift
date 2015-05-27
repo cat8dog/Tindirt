@@ -7,7 +7,6 @@ import FBSDKLoginKit
 
 
 
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -26,6 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var pushNotifications:UIUserNotificationSettings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
         application.registerUserNotificationSettings(pushNotifications)
         application.registerForRemoteNotifications()
+        
+        PFFacebookUtils.initializeFacebookWithApplicationLaunchOptions(launchOptions)
         
         let defaultACL = PFACL()
         // if you would like all objects to be private by default, remove this line. 
@@ -53,17 +54,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         
+            let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+            if let user = PFUser.currentUser(){
+                let revealVC = storyBoard.instantiateViewControllerWithIdentifier("mainScreen") as? UIViewController
+                let nav = UINavigationController(rootViewController: revealVC!)
+                self.window?.rootViewController = nav
+            } else
+            {
+                self.window?.rootViewController = storyBoard.instantiateInitialViewController() as? UIViewController
+            }
         
-        return true
+        
+        return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
-    // test commit
+    func application(application: UIApplication,
+        openURL url: NSURL,
+        sourceApplication: String?,
+        annotation: AnyObject?) -> Bool {
+            return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
+    }
     
-    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-        // Store the deviceToken in the current Installation and save it to Parse
-        let installation = PFInstallation.currentInstallation()
-        installation.setDeviceTokenFromData(deviceToken)
-        installation.saveInBackground()
+//    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+//        // Store the deviceToken in the current Installation and save it to Parse
+//        let installation = PFInstallation.currentInstallation()
+//        installation.setDeviceTokenFromData(deviceToken)
+//        installation.saveInBackground()
     }
     
     
@@ -95,5 +111,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 
-}
+
 
